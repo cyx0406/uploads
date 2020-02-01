@@ -219,9 +219,9 @@ int main()
 	for (int i = 2; i <= n; ++i)
 	{
 		int u, v; 
-        read(u), read(v); 
-        addEdge(u, v); 
-        addEdge(v, u); 
+		read(u), read(v); 
+		addEdge(u, v); 
+		addEdge(v, u); 
 	}
 	
 	dfs1(1); 
