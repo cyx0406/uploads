@@ -1,10 +1,4 @@
-#include <cmath>
-#include <cstdio>
-#include <cctype>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <algorithm>
+#include <bits/stdc++.h>
 
 typedef long long s64; 
 
@@ -28,7 +22,7 @@ inline bool getopt()
 }
 
 const int MaxNV = 1e5 + 5; 
-const int MaxNE = MaxNV; 
+const int MaxNE = MaxNV << 1; 
 const int MaxNode = MaxNV << 2; 
 const int mod = 1e9 + 7; 
 
@@ -83,8 +77,8 @@ struct matrix
 	}
 }A(1, 2), T(2, 2); 
 
-int n, m, f_neg[MaxNV], f_pos[MaxNV], dis1[MaxNV], dis2[MaxNV]; 
 int ect, adj[MaxNV], to[MaxNE], nxt[MaxNE]; 
+int n, m, f_neg[MaxNV], f_pos[MaxNV], dis1[MaxNV], dis2[MaxNV]; 
 int fa[MaxNV], son[MaxNV], sze[MaxNV], dep[MaxNV], pos[MaxNV], idx[MaxNV], top[MaxNV], totpos; 
 
 int tag1[MaxNode], tag2[MaxNode]; 
@@ -114,8 +108,9 @@ inline void dfs1(const int &u)
 	sze[u] = 1; 
 //	son[u] = top[u] = 0; 
 	
-	trav(u)
+	trav(u) if (v != fa[u])
 	{
+		fa[v] = u; 
 		dfs1(v); 
 		sze[u] += sze[v]; 
 		if (sze[v] > sze[son[u]])
@@ -132,7 +127,7 @@ inline void dfs2(const int &u)
 		dfs2(son[u]); 
 	}
 	trav(u)
-		if (v != son[u])
+		if (v != son[u] && v != fa[u])
 		{
 			idx[pos[v] = ++totpos] = v; 
 			top[v] = v; 
@@ -218,17 +213,17 @@ inline int path_query(int u, int v)
 
 int main()
 {
-	freopen("fibonacci.in", "r", stdin); 
-	freopen("fibonacci.out", "w", stdout); 
-	
 	A.a[1][1] = T.a[1][1] = T.a[1][2] = T.a[2][1] = 1; 
 		
 	read(n), read(m); 
 	for (int i = 2; i <= n; ++i)
 	{
-		read(fa[i]); 
-		addEdge(fa[i], i); 
+		int u, v; 
+        read(u), read(v); 
+        addEdge(u, v); 
+        addEdge(v, u); 
 	}
+	
 	dfs1(1); 
 	pos[1] = idx[1] = top[1] = totpos = 1; 
 	dfs2(1); 
@@ -257,7 +252,5 @@ int main()
 			printf("%d\n", path_query(x, y));  
 	}
 	
-	fclose(stdin); 
-	fclose(stdout); 
 	return 0; 
 }
